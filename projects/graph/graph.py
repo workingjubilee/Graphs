@@ -74,10 +74,11 @@ class Graph:
         pass
 
     def bfs(self, starting_vertex, destination_vertex):
-        queue = []
-        visited = { starting_vertex }
         verts = self.vertices
+
         queue = [ [starting_vertex] ]
+        visited = { starting_vertex }
+
 
         for i in range(len(verts)):
             path = queue.pop(0)
@@ -94,38 +95,35 @@ class Graph:
         print(path)
 
     def dfs(self, starting_vertex, destination_vertex):
-        stack = []
-        visited = set()
         verts = self.vertices
-        stack.append(starting_vertex)
+
+        stack = [ [starting_vertex] ]
+        visited = set()
+        ends = set()
 
         for i in range(len(verts)):
-            visit = stack[len(stack) -1]
+            path = stack.pop()
+            visit = path[-1]
+            visited.add(visit)
 
-            if visit not in visited:
-                visited.add(visit)
-
-            edges = self._unvisited_edges(visit, visited)
-            if destination_vertex in edges:
-                visited.add(destination_vertex)
-                break
-
-
-            while len(edges) == 0:
+            branches = self._unvisited_edges(visit, visited)
+            while len(branches) == 0:
                 try:
-                    stack.pop()
-                    visit = stack[len(stack) -1]
-                    edges = self._unvisited_edges(visit, visited)
+                    ends.add(visit)
+                    path = stack.pop()
+                    visit = path[-1]
+                    branches = self._unvisited_edges(visit, visited)
                 except IndexError:
                     break
 
-            if len(edges) > 0:
-                stack.append(edges[0])
+            if destination_vertex in branches:
+                path.append(destination_vertex)
+                break
 
-        print(visited)
+            for i in branches:
+                stack.append(path + [i])
 
-
-
+        print(path)
 
 
 
