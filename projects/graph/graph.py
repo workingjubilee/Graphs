@@ -7,51 +7,123 @@ class Graph:
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
     def __init__(self):
         self.vertices = {}
+
+
     def add_vertex(self, vertex):
-        """
-        Add a vertex to the graph.
-        """
-        pass  # TODO
+        verts = self.vertices
+        if verts.get(vertex) == None:
+            verts[vertex] = set()
+
     def add_edge(self, v1, v2):
-        """
-        Add a directed edge to the graph.
-        """
-        pass  # TODO
+        verts = self.vertices
+        if v1 in verts and v2 in verts:
+            verts[v1].add(v2)
+        else:
+            raise Exception
+
+    def _unvisited_edges(self, vertex, visited):
+            return [i for i in self.vertices.get(vertex) if i not in visited]
+
     def bft(self, starting_vertex):
-        """
-        Print each vertex in breadth-first order
-        beginning from starting_vertex.
-        """
-        pass  # TODO
+        queue = []
+        visited = { starting_vertex }
+        verts = self.vertices
+        queue.extend(verts.get(starting_vertex))
+
+        for i in range(len(verts)):
+            visit = queue.pop(0)
+            queue.extend(self._unvisited_edges(visit, visited))
+            visited.add(visit)
+            if len(queue) == 0:
+                break
+
+        print(visited)
+
     def dft(self, starting_vertex):
-        """
-        Print each vertex in depth-first order
-        beginning from starting_vertex.
-        """
-        pass  # TODO
+        stack = []
+        visited = set()
+        verts = self.vertices
+        stack.append(starting_vertex)
+
+        for i in range(len(verts)):
+            visit = stack[len(stack) -1]
+
+            if visit not in visited:
+                visited.add(visit)
+
+            edges = self._unvisited_edges(visit, visited)
+
+            while len(edges) == 0:
+                try:
+                    stack.pop()
+                    visit = stack[len(stack) -1]
+                    edges = self._unvisited_edges(visit, visited)
+                except IndexError:
+                    break
+
+            if len(edges) > 0:
+                stack.append(edges[0])
+
+        print(visited)
+
     def dft_recursive(self, starting_vertex):
-        """
-        Print each vertex in depth-first order
-        beginning from starting_vertex.
-        This should be done using recursion.
-        """
-        pass  # TODO
+        # stack = []
+        # visited = [starting_vertex]
+        # verts = self.vertices
+        # stack.extend(verts.get(starting_vertex))
+        pass
+
     def bfs(self, starting_vertex, destination_vertex):
-        """
-        Return a list containing the shortest path from
-        starting_vertex to destination_vertex in
-        breath-first order.
-        """
-        pass  # TODO
+        verts = self.vertices
+
+        queue = [ [starting_vertex] ]
+        visited = { starting_vertex }
+
+
+        for i in range(len(verts)):
+            path = queue.pop(0)
+            visit = path[-1]
+            visited.add(visit)
+            branches = set(self._unvisited_edges(visit,visited))
+            if destination_vertex in branches:
+                path.append(destination_vertex)
+                break
+
+            for i in branches:
+                queue.append(path + [i])
+
+        print(path)
+
     def dfs(self, starting_vertex, destination_vertex):
-        """
-        Return a list containing a path from
-        starting_vertex to destination_vertex in
-        depth-first order.
-        """
-        pass  # TODO
+        verts = self.vertices
 
+        stack = [ [starting_vertex] ]
+        visited = set()
+        ends = set()
 
+        for i in range(len(verts)):
+            path = stack.pop()
+            visit = path[-1]
+            visited.add(visit)
+
+            branches = self._unvisited_edges(visit, visited)
+            while len(branches) == 0:
+                try:
+                    ends.add(visit)
+                    path = stack.pop()
+                    visit = path[-1]
+                    branches = self._unvisited_edges(visit, visited)
+                except IndexError:
+                    break
+
+            if destination_vertex in branches:
+                path.append(destination_vertex)
+                break
+
+            for i in branches:
+                stack.append(path + [i])
+
+        print(path)
 
 
 
