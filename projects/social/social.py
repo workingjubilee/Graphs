@@ -1,4 +1,10 @@
+import random
 
+syllabary = []
+vowels = { 'a', 'i', 'e', 'o', 'u' }
+consonants = { 'd', 't', 's', 'z', 'k', 'g', 'h', 'b', 'p', 'm', 'n', 'w', 'y' }
+for c in consonants:
+    syllabary.extend([f'{c}{v}' for v in vowels])
 
 class User:
     def __init__(self, name):
@@ -43,12 +49,25 @@ class SocialGraph:
         # Reset graph
         self.lastID = 0
         self.users = {}
-        self.friendships = {}
-        # !!!! IMPLEMENT ME
+        
 
-        # Add users
+        for i in range(numUsers):
+            # generates random names using a syllabary, somewhat unnaturally!
+            randomName = ''
+            for i in range(random.randrange(2,5)):
+                randomName += syllabary[random.randrange(0,len(syllabary))]
+            self.addUser(randomName.capitalize())
 
-        # Create friendships
+        for user in self.users:
+            for i in range(random.randrange(0,avgFriendships*2+1)):
+                randomFriend = random.randrange(1,len(self.users))
+
+                if randomFriend == user or randomFriend in self.friendships.get(user):
+                    i -= 1
+                elif randomFriend < user:
+                    self.addFriendship(randomFriend, user)
+                else:
+                    self.addFriendship(user, randomFriend)
 
     def getAllSocialPaths(self, userID):
         """
