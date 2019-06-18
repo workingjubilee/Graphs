@@ -78,9 +78,27 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        queue = [ [userID] ]
+        visited = { } # Note that this is a dictionary, not a set
+        verts = self.friendships
+
+        for i in range(len(verts)):
+            path = queue.pop(0)
+            visit = path[-1]
+            branches = set(self._unvisited_edges(visit,visited))
+            for i in branches:
+                full_path = path + [i]
+                visited[i] = full_path
+                queue.append(full_path)
+
+            if len(queue) == 0:
+                break
+
         return visited
+
+    def _unvisited_edges(self, vertex, visited):
+        verts = self.friendships
+        return [i for i in verts.get(vertex) if i not in visited]
 
 
 if __name__ == '__main__':
