@@ -29,20 +29,6 @@ class Graph:
     def _unvisited_edges(self, vertex, visited):
         return [i for i in self.vertices.get(vertex) if i not in visited]
 
-    def bft(self, starting_vertex):
-        queue = []
-        visited = {starting_vertex}
-        verts = self.vertices
-        queue.extend(verts.get(starting_vertex))
-
-        for i in range(len(verts)):
-            visit = queue.pop(0)
-            queue.extend(self._unvisited_edges(visit, visited))
-            visited.add(visit)
-            if len(queue) == 0:
-                break
-
-        print(visited)
 
     def dft_recursive(self, starting_vertex):
         # stack = []
@@ -51,58 +37,7 @@ class Graph:
         # stack.extend(verts.get(starting_vertex))
         pass
 
-    def bfs(self, starting_vertex, destination_vertex):
-        verts = self.vertices
-
-        queue = [[starting_vertex]]
-        visited = {starting_vertex}
-
-        for i in range(len(verts)):
-            path = queue.pop(0)
-            visit = path[-1]
-            visited.add(visit)
-            branches = set(self._unvisited_edges(visit, visited))
-            if destination_vertex in branches:
-                path.append(destination_vertex)
-                break
-
-            for i in branches:
-                queue.append(path + [i])
-
-        print(path)
-
-    def dfs(self, starting_vertex, destination_vertex):
-        verts = self.vertices
-
-        stack = [[starting_vertex]]
-        visited = set()
-        ends = set()
-
-        for i in range(len(verts)):
-            path = stack.pop()
-            visit = path[-1]
-            visited.add(visit)
-
-            branches = self._unvisited_edges(visit, visited)
-            while len(branches) == 0:
-                try:
-                    ends.add(visit)
-                    path = stack.pop()
-                    visit = path[-1]
-                    branches = self._unvisited_edges(visit, visited)
-                except IndexError:
-                    break
-
-            if destination_vertex in branches:
-                path.append(destination_vertex)
-                break
-
-            for i in branches:
-                stack.append(path + [i])
-
-        print(path)
-
-    def earliest_ancestor(self, child):
+    def find_earliest(self, child):
         verts = self.vertices
 
         queue = [[child]]
@@ -133,7 +68,15 @@ class Graph:
             earliest_ancestor = -1
 
 
-        print(earliest_ancestor)
+        return earliest_ancestor
+
+
+def earliest_ancestor(ancestry, child):
+    graph = Graph()
+    for j, k in ancestry:
+        graph.add_parents(j,k)
+
+    return graph.find_earliest(child)
 
 
 if __name__ == '__main__':
